@@ -9,7 +9,10 @@
           href="{{ url('static', filename='style.css') }}"/>
 </head>
 <body>
-
+{% for message in messages %}
+	{{ message.message }}<br/>
+	{{ message.id }}
+{% endfor %}
 <div class="container bootstrap snippet">
     <div class="row">
 		<div class="col-md-4 bg-white ">

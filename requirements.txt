@@ -1,5 +1,6 @@
 aiohttp==2.0.2
-aiohttp-jinja2
+aiohttp-jinja2==0.13.0
+aiopg==0.13.0
 appdirs==1.4.3
 async-timeout==1.2.0
 chardet==2.3.0
@@ -7,6 +8,11 @@ Jinja2==2.9.5
 MarkupSafe==1.0
 multidict==2.1.4
 packaging==16.8
+psycopg2==2.7.1
 pyparsing==2.2.0
+PyYAML==3.12
 six==1.10.0
+SQLAlchemy==1.1.6
+trafaret==0.8.1
+trafaret-config==1.0.1
 yarl==0.10.0
