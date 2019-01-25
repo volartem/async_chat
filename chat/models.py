@@ -6,21 +6,20 @@ __all__ = ['user', 'message', 'room']
 
 meta = sa.MetaData()
 
-room = sa.Table('room', meta,
-                sa.Column('id', sa.Integer, nullable=False),
-                sa.Column('name', sa.String(150), nullable=False, unique=True),
-                sa.Column('created', sa.Date, nullable=False),
+room = sa.Table(
+    'room', meta,
+    sa.Column('id', sa.Integer, nullable=False),
+    sa.Column('name', sa.String(150), nullable=False, unique=True),
+    sa.Column('created', sa.Date, nullable=False),
 
-                sa.PrimaryKeyConstraint('id', name='room__pk'),
-                )
+    sa.PrimaryKeyConstraint('id', name='room_id__pk'),
+)
 
 user = sa.Table(
     'auth_user', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('password', sa.String(128), nullable=False),
     sa.Column('username', sa.String(150), nullable=False),
-    sa.Column('first_name', sa.String(30), nullable=False),
-    sa.Column('last_name', sa.String(30), nullable=False),
     sa.Column('email', sa.String(254), nullable=False),
     sa.Column('is_superuser', sa.Boolean, default=False),
     sa.Column('last_login', sa.Date, nullable=True),
@@ -28,10 +27,7 @@ user = sa.Table(
     sa.Column('room_id', sa.INTEGER, nullable=True),
 
     # Indexes #
-    sa.PrimaryKeyConstraint('id', name='auth_user_id_pkey'),
-    sa.ForeignKeyConstraint(['room_id'], [room.c.id],
-                            name='auth_user__room_fk',
-                            ondelete='SET NULL')
+    sa.PrimaryKeyConstraint('id', name='auth_user_id__pk'),
 )
 message = sa.Table(
     'message', meta,
