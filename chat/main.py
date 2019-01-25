@@ -13,7 +13,7 @@ from chat.models import close_pg, init_pg
 
 
 def init(loop, argv):
-    env.read_envfile('../config/.env')
+    env.read_envfile('.env')
     ap = argparse.ArgumentParser()
     commandline.standard_argparse_options(ap,
                                           default_config='../config/chat.yaml')
@@ -45,7 +45,6 @@ def main(argv):
                 host='localhost',
                 port=8080)
 
+
 if __name__ == '__main__':
     main(argv=sys.argv[1:])
-
-

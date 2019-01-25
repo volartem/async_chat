@@ -1,4 +1,4 @@
-SET ROLE 'chat_admin';
+SET ROLE 'chat_user';
 
 BEGIN;
 --

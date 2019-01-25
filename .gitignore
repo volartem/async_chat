@@ -6,3 +6,6 @@ __pycache__
 .env
 install.sh
 config/
+docker-compose.yml
+venv
+storage
