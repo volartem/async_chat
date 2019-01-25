@@ -2,10 +2,17 @@ import sqlalchemy as sa
 
 import aiopg.sa
 
-__all__ = ['auth_user', 'message']
+__all__ = ['user', 'message', 'room']
 
 meta = sa.MetaData()
 
+room = sa.Table('room', meta,
+                sa.Column('id', sa.Integer, nullable=False),
+                sa.Column('name', sa.String(150), nullable=False, unique=True),
+                sa.Column('created', sa.Date, nullable=False),
+
+                sa.PrimaryKeyConstraint('id', name='room__pk'),
+                )
 
 user = sa.Table(
     'auth_user', meta,
@@ -18,23 +25,32 @@ user = sa.Table(
     sa.Column('is_superuser', sa.Boolean, default=False),
     sa.Column('last_login', sa.Date, nullable=True),
     sa.Column('date_joined ', sa.Date, nullable=False),
+    sa.Column('room_id', sa.INTEGER, nullable=True),
 
     # Indexes #
-    sa.PrimaryKeyConstraint('id', name='auth_user_id_pkey'))
-
+    sa.PrimaryKeyConstraint('id', name='auth_user_id_pkey'),
+    sa.ForeignKeyConstraint(['room_id'], [room.c.id],
+                            name='auth_user__room_fk',
+                            ondelete='SET NULL')
+)
 message = sa.Table(
     'message', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('message', sa.Text, nullable=False),
     sa.Column('timestamp', sa.Date, nullable=False),
     sa.Column('author_id', sa.Integer, nullable=False),
+    sa.Column('room_id', sa.INTEGER, nullable=False),
 
     # Indexes #
     sa.PrimaryKeyConstraint('id', name='message_id_pkey'),
     sa.ForeignKeyConstraint(['author_id'], [user.c.id],
                             name='chat_author_id_fkey',
                             ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['room_id'], [room.c.id],
+                            name='message__room_fk',
+                            ondelete='CASCADE')
 )
+
 
 class RecordNotFound(Exception):
     """Requested record in database was not found"""
@@ -58,7 +74,6 @@ async def close_pg(app):
     app['models'].close()
     await app['models'].wait_closed()
 
-
 # async def get_message(conn, message_id):
 #     result = await conn.execute(
 #         message.select()
@@ -73,7 +88,6 @@ async def close_pg(app):
 #         .order_by(message.c.id))
 #     message_records = await result.fetchall()
 #     return message_record, message_records
-
 
 
 # async def vote(conn, question_id, choice_id):
