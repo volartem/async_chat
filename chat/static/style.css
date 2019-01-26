@@ -46,6 +46,7 @@ margin-left: -40px;
 .friend-list li a .friend-name,
 .friend-list li a .friend-name:hover {
   color: #777;
+  padding: 5px;
 }
 
 .friend-list li a .last-message {

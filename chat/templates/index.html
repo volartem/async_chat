@@ -9,108 +9,29 @@
           href="{{ url('static', filename='style.css') }}"/>
 </head>
 <body>
-{% for message in messages %}
-	{{ message.message }}<br/>
-	{{ message.id }}
-{% endfor %}
 <div class="container bootstrap snippet">
     <div class="row">
 		<div class="col-md-4 bg-white ">
             <div class=" row border-bottom padding-sm" style="height: 40px;">
-            	Member
+{#            	title  #}
             </div>
 
             <!-- =============================================================== -->
             <!-- member list -->
             <ul class="friend-list">
-                <li class="active bounceInDown">
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>John Doe</strong>
-                		</div>
-                		<div class="last-message text-muted">Hello, Are you there?</div>
-                		<small class="time text-muted">Just now</small>
-                		<small class="chat-alert label label-danger">1</small>
-                	</a>
-                </li>
+                {% for room in rooms %}
                 <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                	<a href="#{{ room.id }}" class="clearfix bounceInDown">
+                		<img src="{{ url('static', filename='room_logo.png') }}" alt="" >
                 		<div class="friend-name">
-                			<strong>Jane Doe</strong>
+                			<strong></strong>
                 		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                		<div class="last-message text-muted friend-name"> {{ room.name }}</div>
                 		<small class="time text-muted">5 mins ago</small>
                 	<small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
                 	</a>
                 </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_6.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_5.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                    <a href="#" class="clearfix">
-                		<img src="http://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                		<div class="friend-name">
-                			<strong>Jane Doe</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">5 mins ago</small>
-                	<small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                	</a>
-                </li>
+            {% endfor %}
             </ul>
 		</div>
 
