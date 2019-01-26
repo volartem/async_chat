@@ -33,7 +33,7 @@ message = sa.Table(
     'message', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('message', sa.Text, nullable=False),
-    sa.Column('timestamp', sa.Date, nullable=False),
+    sa.Column('created', sa.Date, nullable=False),
     sa.Column('author_id', sa.Integer, nullable=False),
     sa.Column('room_id', sa.INTEGER, nullable=False),
 

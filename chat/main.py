@@ -12,7 +12,7 @@ from chat.utils import TRAFARET
 from chat.models import close_pg, init_pg
 
 
-def init(loop, argv):
+def init(argv):
     env.read_envfile('.env')
     ap = argparse.ArgumentParser()
     commandline.standard_argparse_options(ap,
@@ -22,7 +22,7 @@ def init(loop, argv):
 
     config = commandline.config_from_options(options, TRAFARET)
 
-    app = web.Application(loop=loop)
+    app = web.Application()
     app['config'] = config
 
     loader = jinja2.PackageLoader('chat', 'templates')
@@ -39,8 +39,7 @@ def init(loop, argv):
 
 
 def main(argv):
-    loop = asyncio.get_event_loop()
-    app = init(loop, argv)
+    app = init(argv)
     web.run_app(app,
                 host='localhost',
                 port=8080)
