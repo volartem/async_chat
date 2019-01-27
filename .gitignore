@@ -1,7 +1,7 @@
 *.pyc
 *.pyo
 *~
-.idea/
+.idea
 __pycache__
 .env
 install.sh

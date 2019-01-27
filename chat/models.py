@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-
+from datetime import datetime
 import aiopg.sa
 
 __all__ = ['user', 'message', 'room']
@@ -70,30 +70,36 @@ async def close_pg(app):
     app['models'].close()
     await app['models'].wait_closed()
 
-# async def get_message(conn, message_id):
-#     result = await conn.execute(
-#         message.select()
-#         .where(message.c.id == message_id))
-#     message_record = await result.first()
-#     if not message_record:
-#         msg = "Question with id: {} does not exists"
-#         raise RecordNotFound(msg.format(message_id))
-#     result = await conn.execute(
-#         message.select()
-#         .where(message.c.message_id == message_id)
-#         .order_by(message.c.id))
-#     message_records = await result.fetchall()
-#     return message_record, message_records
+
+async def get_message_by_id(conn, message_id):
+    result = await conn.execute(
+        message.select()
+        .where(message.c.id == message_id))
+    message_record = await result.first()
+    if not message_record:
+        msg = "Message with id: {} does not exists".format(message_id)
+        raise RecordNotFound(msg.format(message_id))
+    return instance_as_dict(message_record)
 
 
-# async def vote(conn, question_id, choice_id):
-#     result = await conn.execute(
-#         choice.update()
-#         .returning(*choice.c)
-#         .where(choice.c.question_id == question_id)
-#         .where(choice.c.id == choice_id)
-#         .values(votes=choice.c.votes+1))
-#     record = await result.fetchone()
-#     if not record:
-#         msg = "Question with id: {} or choice id: {} does not exists"
-#         raise RecordNotFound(msg.format(question_id, choice_id))
+async def get_message_by_room_id(conn, room_id):
+    cursor = await conn.execute(
+        message.select().where(message.c.room_id == room_id).order_by(message.c.created)
+    )
+    records = await cursor.fetchall()
+    return [instance_as_dict(row) for row in records if records]
+
+
+async def get_all_rooms_and_messages(conn):
+    cursor = await conn.execute(message.select())
+    records = await cursor.fetchall()
+    cursor_room = await conn.execute(room.select())
+    records_room = await cursor_room.fetchall()
+    messages = [instance_as_dict(m) for m in records]
+    rooms = [instance_as_dict(r) for r in records_room]
+    return messages, rooms
+
+
+def instance_as_dict(obj):
+    return {row: obj[row] if not isinstance(obj[row], datetime) else obj[row].strftime("%Y/%m/%d %H:%M:%S")
+            for row in obj}
