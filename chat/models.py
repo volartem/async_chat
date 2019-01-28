@@ -23,8 +23,7 @@ user = sa.Table(
     sa.Column('email', sa.String(254), nullable=False),
     sa.Column('is_superuser', sa.Boolean, default=False),
     sa.Column('last_login', sa.Date, nullable=True),
-    sa.Column('date_joined ', sa.Date, nullable=False),
-    sa.Column('room_id', sa.INTEGER, nullable=True),
+    sa.Column('date_joined', sa.Date, nullable=False),
 
     # Indexes #
     sa.PrimaryKeyConstraint('id', name='auth_user_id__pk'),
@@ -90,12 +89,18 @@ async def get_message_by_room_id(conn, room_id):
     return [instance_as_dict(row) for row in records if records]
 
 
+async def get_messages_with_users(conn):
+    join = sa.join(message, user, user.c.id == message.c.author_id)
+    query = (sa.select([message, user], use_labels=True).select_from(join))
+    result = await conn.execute(query)
+    return result
+
+
 async def get_all_rooms_and_messages(conn):
-    cursor = await conn.execute(message.select())
-    records = await cursor.fetchall()
+    records = await get_messages_with_users(conn)
+    messages = [instance_as_dict(m) for m in records]
     cursor_room = await conn.execute(room.select())
     records_room = await cursor_room.fetchall()
-    messages = [instance_as_dict(m) for m in records]
     rooms = [instance_as_dict(r) for r in records_room]
     return messages, rooms
 
