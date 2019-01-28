@@ -89,20 +89,19 @@ async def get_message_by_room_id(conn, room_id):
     return [instance_as_dict(row) for row in records if records]
 
 
-async def get_messages_with_users(conn):
+async def get_messages_with_users_by_room_id(conn, room_id):
     join = sa.join(message, user, user.c.id == message.c.author_id)
-    query = (sa.select([message, user], use_labels=True).select_from(join))
-    result = await conn.execute(query)
-    return result
-
-
-async def get_all_rooms_and_messages(conn):
-    records = await get_messages_with_users(conn)
+    query = sa.select([message, user], use_labels=True).select_from(join).where(message.c.room_id == room_id)
+    records = await conn.execute(query)
     messages = [instance_as_dict(m) for m in records]
+    return messages
+
+
+async def get_all_rooms(conn):
     cursor_room = await conn.execute(room.select())
     records_room = await cursor_room.fetchall()
     rooms = [instance_as_dict(r) for r in records_room]
-    return messages, rooms
+    return rooms
 
 
 def instance_as_dict(obj):

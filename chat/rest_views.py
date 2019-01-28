@@ -1,5 +1,5 @@
 from aiohttp import web
-from .models import get_message_by_id, get_message_by_room_id
+from .models import get_message_by_id, get_messages_with_users_by_room_id
 
 
 async def messages_id(request):
@@ -12,5 +12,5 @@ async def messages_id(request):
 async def messages_room_id(request):
     room_id = int(request.match_info.get('id', 2))
     async with request.app['models'].acquire() as conn:
-        record = await get_message_by_room_id(conn, room_id)
+        record = await get_messages_with_users_by_room_id(conn, room_id)
     return web.json_response(record)
