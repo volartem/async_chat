@@ -3,11 +3,9 @@ from datetime import datetime
 from .security import generate_password_hash
 import aiopg.sa
 
-__all__ = ['user', 'message', 'room']
-
 meta = sa.MetaData()
 
-room = sa.Table(
+rooms = sa.Table(
     'room', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('name', sa.String(150), nullable=False, unique=True),
@@ -16,7 +14,7 @@ room = sa.Table(
     sa.PrimaryKeyConstraint('id', name='room_id__pk'),
 )
 
-user = sa.Table(
+users = sa.Table(
     'auth_user', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('password', sa.String(128), nullable=False),
@@ -29,7 +27,7 @@ user = sa.Table(
     # Indexes #
     sa.PrimaryKeyConstraint('id', name='auth_user_id__pk'),
 )
-message = sa.Table(
+messages = sa.Table(
     'message', meta,
     sa.Column('id', sa.Integer, nullable=False),
     sa.Column('message', sa.Text, nullable=False),
@@ -39,10 +37,10 @@ message = sa.Table(
 
     # Indexes #
     sa.PrimaryKeyConstraint('id', name='message_id_pkey'),
-    sa.ForeignKeyConstraint(['author_id'], [user.c.id],
+    sa.ForeignKeyConstraint(['author_id'], [users.c.id],
                             name='chat_author_id_fkey',
                             ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['room_id'], [room.c.id],
+    sa.ForeignKeyConstraint(['room_id'], [rooms.c.id],
                             name='message__room_fk',
                             ondelete='CASCADE')
 )
@@ -74,8 +72,8 @@ async def close_pg(app):
 
 async def get_message_by_id(conn, message_id):
     result = await conn.execute(
-        message.select()
-        .where(message.c.id == message_id))
+        messages.select()
+        .where(messages.c.id == message_id))
     message_record = await result.first()
     if not message_record:
         msg = "Message with id: {} does not exists".format(message_id)
@@ -85,39 +83,40 @@ async def get_message_by_id(conn, message_id):
 
 async def get_message_by_room_id(conn, room_id):
     cursor = await conn.execute(
-        message.select().where(message.c.room_id == room_id).order_by(message.c.created)
+        messages.select().where(messages.c.room_id == room_id).order_by(messages.c.created)
     )
     records = await cursor.fetchall()
     return [instance_as_dict(row) for row in records if records]
 
 
 async def get_messages_with_users_by_room_id(conn, room_id):
-    join = sa.join(message, user, user.c.id == message.c.author_id)
-    query = sa.select([message, user], use_labels=True).select_from(join).where(message.c.room_id == room_id)
+    join = sa.join(messages, users, users.c.id == messages.c.author_id)
+    query = sa.select([messages, users], use_labels=True).select_from(join).where(messages.c.room_id == room_id)
     records = await conn.execute(query)
-    messages = [instance_as_dict(m) for m in records]
-    return messages
+    messages_dict = [instance_as_dict(m) for m in records]
+    return messages_dict
 
 
 async def get_all_rooms(conn):
-    cursor_room = await conn.execute(room.select())
+    cursor_room = await conn.execute(rooms.select())
     records_room = await cursor_room.fetchall()
-    rooms = [instance_as_dict(r) for r in records_room]
-    return rooms
+    rooms_dict = [instance_as_dict(r) for r in records_room]
+    return rooms_dict
 
 
 async def get_user_by_username(conn, username):
-    cursor = await conn.execute(user.select().where(user.c.username == username))
+    cursor = await conn.execute(users.select().where(users.c.username == username))
     result = await cursor.first()
     return result
 
 
 async def create_user(conn, form):
     password = generate_password_hash(form['password'])
-    stmt = user.insert().returning(*user.c).values(username=form['username'], password=password, email=form['email'],
-                                                   is_superuser=False,
-                                                   date_joined=datetime.now(), last_login=datetime.now())
-    result = await conn.execute(stmt)
+    user_insert = users.insert().returning(*users.c).values(username=form['username'], password=password,
+                                                            email=form['email'],
+                                                            is_superuser=False,
+                                                            date_joined=datetime.now(), last_login=datetime.now())
+    result = await conn.execute(user_insert)
     return await result.first()
 
 
