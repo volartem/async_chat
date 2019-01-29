@@ -15,4 +15,10 @@ TRAFARET = T.Dict({
         }),
     T.Key('host'): T.String(regex=primitive_ip_regexp),
     T.Key('port'): T.Int(),
+
+    T.Key('redis'):
+        T.Dict({
+            'host': T.String(),
+            'port': T.Int(),
+        }),
 })

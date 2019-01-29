@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Chat</title>
-    <!--<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">-->
-    <!-- Latest compiled and minified CSS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+{% extends "base.html" %}
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+{% block auth %}
+    {% if user %}
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/logout">Logout</a>
+            </div>
+        </div>
+    {% else %}
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/login">Login</a>
+            </div>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="{{ url('static', filename='style.css') }}"/>
-    <script src="{{ url('static', filename='chat.js') }}"></script>
-</head>
-<body>
-<div class="container bootstrap snippet">
+    {% endif %}
+{% endblock %}
+{% block content %}
+
     <div class="row">
-        <div class="col-md-4 bg-white ">
+        <div class="col-md-4 col-xs-4">
             <div class=" row border-bottom padding-sm" style="height: 40px;">
                 {#            	title  #}
             </div>
@@ -43,23 +39,26 @@
                     </li>
                 {% endfor %}
             </ul>
-            <ul class="friend-list">
-                <li>
-                    <a href="#" class="clearfix bounceInDown">
-                        <div class="friend-name">
-                            <strong></strong>
-                        </div>
-                        <div class="last-message text-muted"> Add new chat room</div>
-                        <small class="time text-muted"></small>
-                        <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                    </a>
-                </li>
-            </ul>
+            {% if user %}
+                <ul class="friend-list">
+                    <li>
+                        <a href="#" class="clearfix bounceInDown">
+                            <div class="friend-name">
+                                <strong></strong>
+                            </div>
+                            <div class="last-message text-muted"> Add new chat room</div>
+                            <small class="time text-muted"></small>
+                            <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+
         </div>
 
         <!--=========================================================-->
         <!-- selected chat -->
-        <div class="col-md-8 bg-white ">
+        <div class="col-md-8 col-xs-8">
             <div class="chat-message">
                 <ul class="chat" id="chat">
 
@@ -75,6 +74,5 @@
             </div>
         </div>
     </div>
-</div>
-</body>
-</html>
+
+{% endblock %}

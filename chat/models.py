@@ -63,6 +63,7 @@ async def init_pg(app):
         maxsize=conf['maxsize'],
         loop=app.loop)
     app['models'] = engine
+    return engine
 
 
 async def close_pg(app):
@@ -102,6 +103,12 @@ async def get_all_rooms(conn):
     records_room = await cursor_room.fetchall()
     rooms = [instance_as_dict(r) for r in records_room]
     return rooms
+
+
+async def get_user_by_username(conn, username):
+    cursor = await conn.execute(user.select().where(user.c.username == username))
+    result = await cursor.first()
+    return result
 
 
 def instance_as_dict(obj):

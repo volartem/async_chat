@@ -17,4 +17,3 @@ async def messages_room_id(request):
         return web.json_response(record)
     except ValueError:
         raise web.HTTPBadRequest
-
