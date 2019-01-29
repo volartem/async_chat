@@ -1,0 +1,23 @@
+{% extends "login.html" %}
+
+
+{% block title %}
+    <h1>Sign Up</h1>
+    <p><a href="/login">Already have an account</a></p>
+{% endblock %}
+
+{% block form_head %}
+    <form action="/signup" method="post">{% endblock %}
+
+{% block form_end %}
+    <p>
+        <label for="password-confirm">Confirm Password</label><br>
+        <input id="password-confirm" name="password-confirm" type="password" value="" size=20 required/>
+    </p>
+    <p>
+        <label for="email">Email</label><br>
+        <input id="email" name="email" type="email" value="" required/>
+    </p>
+    <input class="btn btn-default" type="submit" value="Sign up"/>
+    </form>
+{% endblock %}

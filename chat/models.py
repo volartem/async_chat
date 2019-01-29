@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from datetime import datetime
+from .security import generate_password_hash
 import aiopg.sa
 
 __all__ = ['user', 'message', 'room']
@@ -109,6 +110,15 @@ async def get_user_by_username(conn, username):
     cursor = await conn.execute(user.select().where(user.c.username == username))
     result = await cursor.first()
     return result
+
+
+async def create_user(conn, form):
+    password = generate_password_hash(form['password'])
+    stmt = user.insert().returning(*user.c).values(username=form['username'], password=password, email=form['email'],
+                                                   is_superuser=False,
+                                                   date_joined=datetime.now(), last_login=datetime.now())
+    result = await conn.execute(stmt)
+    return await result.first()
 
 
 def instance_as_dict(obj):

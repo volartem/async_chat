@@ -1,6 +1,6 @@
 import aiohttp_jinja2
-from .models import get_all_rooms, get_user_by_username
-from .form import validate_login_form
+from .models import get_all_rooms, get_user_by_username, create_user
+from .form import validate_login_form, validate_signup_form
 from aiohttp_security import remember, forget, authorized_userid
 from aiohttp import web
 
@@ -33,6 +33,30 @@ async def login(request):
                 response = redirect(request.app.router, 'index')
 
                 user = await get_user_by_username(conn, form['username'])
+                await remember(request, response, user['username'])
+
+                raise response
+    return {}
+
+
+@aiohttp_jinja2.template('registration.html')
+async def registration(request):
+    username = await authorized_userid(request)
+    if username:
+        raise redirect(request.app.router, 'index')
+
+    if request.method == 'POST':
+        form = await request.post()
+
+        async with request.app['models'].acquire() as conn:
+            error = await validate_signup_form(conn, form)
+
+            if error:
+                return {'error': error}
+            else:
+                response = redirect(request.app.router, 'index')
+
+                user = await create_user(conn, form)
                 await remember(request, response, user['username'])
 
                 raise response
