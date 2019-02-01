@@ -32,7 +32,9 @@ def error_pages(overrides):
                     raise
                 else:
                     return await override(request, ex)
+
         return middleware_handler
+
     return middleware
 
 

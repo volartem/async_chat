@@ -13,7 +13,7 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
         async with self.db_pool.acquire() as conn:
             user = await get_user_by_username(conn, identity)
             if user:
-                return identity
+                return user
 
         return None
 

@@ -7,12 +7,10 @@ from aiohttp import web
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    username = await authorized_userid(request)
-    if username:
-        print(username)
+    user = await authorized_userid(request)
     async with request.app['models'].acquire() as conn:
         rooms = await get_all_rooms(conn)
-        return {'rooms': rooms, 'user': username}
+        return {'rooms': rooms, 'user': user}
 
 
 @aiohttp_jinja2.template('login.html')
