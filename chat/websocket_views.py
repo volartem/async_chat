@@ -32,6 +32,7 @@ async def websocket_handler(request):
             else:
                 request.app['websockets'][room_id][token] = ws_current
                 log.info(' %s joined.', token)
+
                 while True:
                     msg = await ws_current.receive()
                     if msg.type == aiohttp.WSMsgType.text:
@@ -43,7 +44,7 @@ async def websocket_handler(request):
                         for ws in request.app['websockets'][room_id].values():
                             if user:
                                 await ws.send_json(
-                                    {'action': 'sent', 'username': user, 'text': message['message'],
+                                    {'action': 'sent', 'username': user['username'], 'text': message['message'],
                                      'created': message['created']})
                     else:
                         break

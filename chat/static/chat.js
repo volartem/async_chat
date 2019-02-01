@@ -9,6 +9,9 @@ $(function () {
 function getMeassages() {
     $(".chat-link").click(function () {
         let roomId = $(this).attr("href").replace("#", "");
+        $(".friend-list").children().removeClass("active");
+        $(this).parent().addClass("active");
+
         let room_url = "/messages/room/" + roomId;
         $.get(room_url).then(data => {
             displayMessages(data).then(() => {
@@ -21,11 +24,12 @@ function getMeassages() {
 }
 
 function displayMessages(data) {
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         $("#chat").html("");
         $.each(data, function (count, item) {
             appendMessage(item.message_message, item.auth_user_username, item.message_created)
         });
+        $("#chatMessages").animate({scrollTop: $("#chatMessages")[0].scrollHeight}, 5);
         resolve();
     });
 }
@@ -36,7 +40,9 @@ function webSocketConnections(roomId) {
     if (!TOKEN) {
         getToken().then((token) => {
             websocketMessaging(token, roomId);
-        }, error => {console.log(error)});
+        }, error => {
+            console.log(error)
+        });
     } else {
         websocketMessaging(TOKEN, roomId);
     }
@@ -49,8 +55,8 @@ function websocketMessaging(token, roomId) {
     let wsUrl = "ws://" + window.location.host + "/ws/" + roomId + "/?token=" + TOKEN;
 
     if (CURRENT_CONNECTION.url !== wsUrl) {
-        if(CURRENT_CONNECTION && CURRENT_CONNECTION.url){
-           CURRENT_CONNECTION.close();
+        if (CURRENT_CONNECTION && CURRENT_CONNECTION.url) {
+            CURRENT_CONNECTION.close();
         }
         connection = getWebsocketConnection(wsUrl);
         console.log(connection.url);
@@ -74,6 +80,7 @@ function websocketMessaging(token, roomId) {
             let data = JSON.parse(event.data);
             if (data.action !== 'error') {
                 appendMessage(data.text, data.username, data.created);
+                $("#chatMessages").animate({scrollTop: $('#chatMessages')[0].scrollHeight}, 'slow');
             } else {
                 showError();
             }
@@ -88,7 +95,9 @@ function getToken() {
         $.get("/uuid/").then((data) => {
             console.log(data);
             resolve(data.token);
-        }, error => { reject(error) });
+        }, error => {
+            reject(error);
+        });
     });
 }
 

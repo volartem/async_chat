@@ -22,6 +22,6 @@ async def messages_room_id(request):
 
 
 async def generate_uuid(request):
-    username = str(await authorized_userid(request))
-    token = "{0}-{1}".format(username.replace(" ", ""), str(uuid.uuid4()))
+    user = await authorized_userid(request)
+    token = "{0}-{1}".format(user['username'].replace(" ", "") if user else str(user), str(uuid.uuid4()))
     return web.json_response({'token': token})
