@@ -16,6 +16,7 @@ from chat.routes import setup_routes
 from chat.middleware import setup_middlewares
 from chat.utils import TRAFARET
 from chat.models import close_pg, init_pg
+import logging
 
 
 async def init(argv):
@@ -51,6 +52,8 @@ async def init(argv):
         SessionIdentityPolicy(),
         DBAuthorizationPolicy(db_pool)
     )
+    app['websockets'] = {}
+    app.on_shutdown.append(shutdown)
     return app
 
 
@@ -60,13 +63,20 @@ async def setup_redis(app):
         app['config']['redis']['port']
     ))
 
-    async def close_redis(app):
+    async def close_redis():
         pool.close()
         await pool.wait_closed()
 
-    app.on_cleanup.append(close_redis)
+    app.on_cleanup.append(await close_redis())
     app['redis_pool'] = pool
     return pool
+
+
+async def shutdown(app):
+    for room in app['websockets'].values():
+        for ws in room.values():
+            await ws.close()
+    app['websockets'].clear()
 
 
 async def current_user_ctx_processor(request):
@@ -77,6 +87,7 @@ async def current_user_ctx_processor(request):
 
 def main(argv):
     app = init(argv)
+    logging.basicConfig(level=logging.DEBUG)
     web.run_app(app,
                 host='localhost',
                 port=8080)

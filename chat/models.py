@@ -91,7 +91,8 @@ async def get_message_by_room_id(conn, room_id):
 
 async def get_messages_with_users_by_room_id(conn, room_id):
     join = sa.join(messages, users, users.c.id == messages.c.author_id)
-    query = sa.select([messages, users], use_labels=True).select_from(join).where(messages.c.room_id == room_id)
+    query = sa.select([messages, users], use_labels=True).select_from(join)\
+        .where(messages.c.room_id == room_id).order_by(messages.c.created)
     records = await conn.execute(query)
     messages_dict = [instance_as_dict(m) for m in records]
     return messages_dict
@@ -108,6 +109,20 @@ async def get_user_by_username(conn, username):
     cursor = await conn.execute(users.select().where(users.c.username == username))
     result = await cursor.first()
     return result
+
+
+async def get_room_by_id(conn, id):
+    cursor = await conn.execute(rooms.select().where(rooms.c.id == id))
+    result = await cursor.first()
+    return result
+
+
+async def create_message(conn, text, user_id, room_id):
+    message_insert = messages.insert().returning(*messages.c).values(message=text, author_id=user_id, room_id=room_id,
+                                                                     created=datetime.now())
+    result = await conn.execute(message_insert)
+    message = await result.first()
+    return instance_as_dict(message)
 
 
 async def create_user(conn, form):

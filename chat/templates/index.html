@@ -8,14 +8,16 @@
             </div>
         </div>
     {% else %}
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/login">Sign in</a>
-            </div>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/login">Sign in</a>
+        </div>
 
     {% endif %}
 {% endblock %}
 {% block content %}
-
+    <div class="alert alert-danger alert-dismissible" id="errorWarningBlock" style="display: none;">
+        <strong>Warning!</strong> Need auth!
+    </div>
     <div class="row">
         <div class="col-md-4 col-xs-4">
             <div class=" row border-bottom padding-sm" style="height: 40px;">
@@ -33,7 +35,7 @@
                                 <strong></strong>
                             </div>
                             <div class="last-message text-muted friend-name"> {{ room.name }}</div>
-                            <small class="time text-muted">5 mins ago</small>
+                            <small class="time text-muted"></small>
                             <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
                         </a>
                     </li>
@@ -64,11 +66,12 @@
 
                 </ul>
             </div>
-            <div class="chat-box bg-white">
+            <div class="chat-box bg-white" id="chatBox" style="display: none;">
                 <div class="input-group">
-                    <input class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+                    <input class="form-control border no-shadow no-rounded" id="inputMessageText"
+                           placeholder="Type your message here">
                     <span class="input-group-btn">
-            			<button class="btn btn-success no-rounded" type="button">Send</button>
+            			<button class="btn btn-success no-rounded" id="sendMessage" type="button">Send</button>
             		</span>
                 </div><!-- /input-group -->
             </div>

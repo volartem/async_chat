@@ -1,5 +1,7 @@
 from aiohttp import web
 from .models import get_message_by_id, get_messages_with_users_by_room_id
+import uuid
+from aiohttp_security import authorized_userid
 
 
 async def messages_id(request):
@@ -17,3 +19,9 @@ async def messages_room_id(request):
         return web.json_response(record)
     except ValueError:
         raise web.HTTPBadRequest
+
+
+async def generate_uuid(request):
+    username = str(await authorized_userid(request))
+    token = "{0}-{1}".format(username.replace(" ", ""), str(uuid.uuid4()))
+    return web.json_response({'token': token})
