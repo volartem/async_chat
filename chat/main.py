@@ -1,5 +1,5 @@
 import sys
-import argparse
+import os
 from aiohttp_session import setup as setup_session
 from aiohttp_session.redis_storage import RedisStorage
 from aiohttp_security import authorized_userid
@@ -10,27 +10,15 @@ import aioredis
 import jinja2
 import aiohttp_jinja2
 from envparse import env
-from trafaret_config import commandline
 from aiohttp import web
 from chat.routes import setup_routes
 from chat.middleware import setup_middlewares
-from chat.utils import TRAFARET
 from chat.models import close_pg, init_pg
 import logging
 
 
 async def init(argv):
-    env.read_envfile('.env')
-    ap = argparse.ArgumentParser()
-    commandline.standard_argparse_options(ap,
-                                          default_config='../config/chat.yaml')
-
-    options = ap.parse_args(argv)
-
-    config = commandline.config_from_options(options, TRAFARET)
-
     app = web.Application()
-    app['config'] = config
 
     redis_pool = await setup_redis(app)
     setup_session(app, RedisStorage(redis_pool))
@@ -59,8 +47,8 @@ async def init(argv):
 
 async def setup_redis(app):
     pool = await aioredis.create_redis_pool((
-        app['config']['redis']['host'],
-        app['config']['redis']['port']
+        os.environ.get('REDIS_HOST'),
+        int(os.environ.get('REDIS_PORT'))
     ))
 
     async def close_redis():
@@ -86,11 +74,14 @@ async def current_user_ctx_processor(request):
 
 
 def main(argv):
+    env.read_envfile('.env')
     app = init(argv)
     logging.basicConfig(level=logging.DEBUG)
-    web.run_app(app,
-                host='localhost',
-                port=8080)
+
+    if os.environ.get("DEBUG"):
+        web.run_app(app,
+                    host=os.environ.get("HOST"),
+                    port=int(os.environ.get('PORT')))
 
 
 if __name__ == '__main__':

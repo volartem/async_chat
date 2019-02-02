@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from datetime import datetime
 from .security import generate_password_hash
 import aiopg.sa
+import os
 
 meta = sa.MetaData()
 
@@ -51,15 +52,14 @@ class RecordNotFound(Exception):
 
 
 async def init_pg(app):
-    conf = app['config']['postgres']
     engine = await aiopg.sa.create_engine(
-        database=conf['database'],
-        user=conf['user'],
-        password=conf['password'],
-        host=conf['host'],
-        port=conf['port'],
-        minsize=conf['minsize'],
-        maxsize=conf['maxsize'],
+        database=os.environ.get('POSTGRES_DB'),
+        user=os.environ.get('POSTGRES_USER'),
+        password=os.environ.get('POSTGRES_PASSWORD'),
+        host=os.environ.get('POSTGRES_HOST'),
+        port=int(os.environ.get('POSTGRES_PORT')),
+        minsize=int(os.environ.get('POSTGRES_MIN_SIZE')),
+        maxsize=int(os.environ.get('POSTGRES_MAX_SIZE')),
         loop=app.loop)
     app['models'] = engine
     return engine
