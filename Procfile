@@ -1,1 +1,1 @@
-web: gunicorn chat:main --bind localhost:5000 --worker-class aiohttp.GunicornWebWorker
+web: python chat/main.py

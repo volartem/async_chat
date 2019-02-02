@@ -48,8 +48,9 @@ async def init(argv):
 async def setup_redis(app):
     pool = await aioredis.create_redis_pool((
         os.environ.get('REDIS_HOST'),
-        int(os.environ.get('REDIS_PORT'))
-    ))
+        int(os.environ.get('REDIS_PORT'))),
+        password=os.environ.get('REDIS_PASSWORD')
+    )
 
     async def close_redis():
         pool.close()
