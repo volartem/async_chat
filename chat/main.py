@@ -79,10 +79,7 @@ def main(argv):
     app = init(argv)
     logging.basicConfig(level=logging.DEBUG)
 
-    if os.environ.get("DEBUG"):
-        web.run_app(app,
-                    host=os.environ.get("HOST"),
-                    port=int(os.environ.get('PORT')))
+    web.run_app(app, port=int(os.environ.get('PORT')))
 
 
 if __name__ == '__main__':
