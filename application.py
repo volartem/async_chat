@@ -1,6 +1,7 @@
 import sys
-from chat.main import main
+from chat.main import init
 
 
-if __name__ == "__main__":
-    app = main(sys.argv[1:])
+async def factory():
+    app = await init(sys.argv[1:])
+    return app
