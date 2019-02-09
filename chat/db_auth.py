@@ -1,7 +1,7 @@
-
+import aiopg.sa
+import os
 from aiohttp_security.abc import AbstractAuthorizationPolicy
-
-from .models import get_user_by_username
+from chat.models import get_user_by_username
 
 
 class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
@@ -21,3 +21,22 @@ class DBAuthorizationPolicy(AbstractAuthorizationPolicy):
         if identity is None:
             return False
         return True
+
+
+async def init_pg(app):
+    engine = await aiopg.sa.create_engine(
+        database=os.environ.get('POSTGRES_DB'),
+        user=os.environ.get('POSTGRES_USER'),
+        password=os.environ.get('POSTGRES_PASSWORD'),
+        host=os.environ.get('POSTGRES_HOST'),
+        port=int(os.environ.get('POSTGRES_PORT')),
+        minsize=int(os.environ.get('POSTGRES_MIN_SIZE')),
+        maxsize=int(os.environ.get('POSTGRES_MAX_SIZE')),
+        loop=app.loop)
+    app['models'] = engine
+    return engine
+
+
+async def close_pg(app):
+    app['models'].close()
+    await app['models'].wait_closed()

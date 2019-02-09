@@ -5,7 +5,7 @@ from aiohttp_session.redis_storage import RedisStorage
 from aiohttp_security import authorized_userid
 from aiohttp_security import setup as setup_security
 from aiohttp_security import SessionIdentityPolicy
-from chat.db_auth import DBAuthorizationPolicy
+from chat.db_auth import DBAuthorizationPolicy, close_pg, init_pg
 import aioredis
 import jinja2
 import aiohttp_jinja2
@@ -13,7 +13,6 @@ from envparse import env
 from aiohttp import web
 from chat.routes import setup_routes
 from chat.middleware import setup_middlewares
-from chat.models import close_pg, init_pg
 import logging
 
 

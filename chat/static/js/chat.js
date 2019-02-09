@@ -116,7 +116,7 @@ function appendMessage(text, user, created) {
     let chatDiv = $("#chat");
     let messageBlock = "<li class=\"left clearfix\">" +
         "   <span class=\"chat-img pull-left\">" +
-        "   <img src=\"/static/cat_logo.png\" alt=\"User Avatar\">" +
+        "   <img src=\"/static/images/cat_logo.png\" alt=\"User Avatar\">" +
         "   </span>" +
         "   <div class=\"chat-body clearfix\">" +
         "       <div class=\"header\">" +
