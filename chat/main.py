@@ -16,7 +16,8 @@ from chat.middleware import setup_middlewares
 import logging
 
 
-async def init(argv):
+async def init():
+    env.read_envfile('.env')
     app = web.Application()
 
     redis_pool = await setup_redis(app)
@@ -41,13 +42,16 @@ async def init(argv):
     )
     app['websockets'] = {}
     app.on_shutdown.append(shutdown)
+    if os.environ.get('DEBUG'):
+        import aiohttp_debugtoolbar
+        aiohttp_debugtoolbar.setup(app, check_host=False)
     return app
 
 
 async def setup_redis(app):
     pool = await aioredis.create_redis_pool((
         os.environ.get('REDIS_HOST'),
-        int(os.environ.get('REDIS_PORT'))),
+        os.environ.get('REDIS_PORT')),
         password=os.environ.get('REDIS_PASSWORD')
     )
 
@@ -73,13 +77,12 @@ async def current_user_ctx_processor(request):
     return {'current_user': {'is_anonymous': is_anonymous}}
 
 
-def main(argv):
-    env.read_envfile('.env')
-    app = init(argv)
+def main():
+    app = init()
     logging.basicConfig(level=logging.DEBUG)
 
     web.run_app(app, port=int(os.environ.get('PORT')))
 
 
 if __name__ == '__main__':
-    main(argv=sys.argv[1:])
+    main()

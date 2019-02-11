@@ -2,9 +2,21 @@ let CURRENT_CONNECTION = {};
 let TOKEN = '';
 
 $(function () {
+    // get_weather().then(data => console.log(data), error => {console.log(error)});
     console.log("ready!");
     getMeassages();
 });
+
+function get_weather() {
+    return new Promise((resolve, reject) => {
+        $.get("/weather").then((data) => {
+            let correctData = JSON.parse(data);
+            resolve(correctData);
+        }, error => {
+            reject(error);
+        });
+    });
+}
 
 function getMeassages() {
     $(".chat-link").click(function () {

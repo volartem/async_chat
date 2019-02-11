@@ -8,7 +8,7 @@ from aiohttp import web
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     user = await authorized_userid(request)
-    async with request.app['models'].acquire() as conn:
+    async with request.app['db'].acquire() as conn:
         rooms = await get_all_rooms(conn)
         return {'rooms': rooms, 'user': user}
 
@@ -22,7 +22,7 @@ async def login(request):
     if request.method == 'POST':
         form = await request.post()
 
-        async with request.app['models'].acquire() as conn:
+        async with request.app['db'].acquire() as conn:
             error = await validate_login_form(conn, form)
 
             if error:
@@ -46,7 +46,7 @@ async def registration(request):
     if request.method == 'POST':
         form = await request.post()
 
-        async with request.app['models'].acquire() as conn:
+        async with request.app['db'].acquire() as conn:
             error = await validate_signup_form(conn, form)
 
             if error:
