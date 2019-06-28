@@ -1,6 +1,6 @@
 # async_chat
 
-This is test asynchronous chat on aiohttp now available
+Simple test asynchronous chat on aiohttp now available
 on <a href="https://aiohttp-chat.herokuapp.com/" target="_blank">heroku</a>
 
 
