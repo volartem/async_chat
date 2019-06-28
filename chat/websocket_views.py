@@ -13,7 +13,7 @@ async def websocket_handler(request):
     try:
         room_id = int(request.match_info.get('room'))
         token = request.rel_url.query.get('token')
-        async with request.app['models'].acquire() as conn:
+        async with request.app['db'].acquire() as conn:
             room = await get_room_by_id(conn, room_id)
             user = await authorized_userid(request)
 

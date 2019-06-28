@@ -1,0 +1,4 @@
+-r requirements.txt
+
+aiohttp-devtools==0.11
+git+https://github.com/Arfey/aiohttp-debugtoolbar.git

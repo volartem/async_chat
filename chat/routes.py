@@ -2,11 +2,13 @@ from chat.views import index, login, logout, registration
 from chat.rest_views import messages_id, messages_room_id, generate_uuid
 from .websocket_views import websocket_handler
 import pathlib
+from third_party.routes import setup_third_party_routes
 
 PROJECT_ROOT = pathlib.Path(__file__).parent
 
 
 def setup_routes(app):
+    setup_third_party_routes(app)
     app.router.add_get('/', index, name='index')
     app.router.add_get('/login', login, name='login')
     app.router.add_post('/login', login, name='login')

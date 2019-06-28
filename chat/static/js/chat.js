@@ -2,11 +2,10 @@ let CURRENT_CONNECTION = {};
 let TOKEN = '';
 
 $(function () {
-    console.log("ready!");
-    getMeassages();
+    getMessages();
 });
 
-function getMeassages() {
+function getMessages() {
     $(".chat-link").click(function () {
         let roomId = $(this).attr("href").replace("#", "");
         $(".friend-list").children().removeClass("active");

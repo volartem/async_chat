@@ -33,10 +33,10 @@ async def init_pg(app):
         minsize=int(os.environ.get('POSTGRES_MIN_SIZE')),
         maxsize=int(os.environ.get('POSTGRES_MAX_SIZE')),
         loop=app.loop)
-    app['models'] = engine
+    app['db'] = engine
     return engine
 
 
 async def close_pg(app):
-    app['models'].close()
-    await app['models'].wait_closed()
+    app['db'].close()
+    await app['db'].wait_closed()
