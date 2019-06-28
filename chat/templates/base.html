@@ -15,7 +15,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css"
           href="{{ url('static', filename='css/style.css') }}"/>
-    <script src="{{ url('static', filename='js/chat.js') }}"></script>
+    <script src="{{ url('static', filename='js/base.js') }}"></script>
+    {% block extra_static %} {% endblock %}
 </head>
 <body>
 <div class="container bootstrap snippet">
@@ -27,6 +28,24 @@
             {% block auth %}{% endblock %}
         </div>
     </nav>
+    <div class="row" style="display:table; height: 120px;">
+        <div class="alert alert-success alert-dismissible col-md-5 col-xs-5" id="weatherDiv"
+             style="display: none; width: auto; height: 100%;">
+            <strong>Current weather in Kharkov: </strong>
+            <div><small> - Temperature: </small><strong id="weatherTemp"></strong> °C</div>
+            <div><small> - Humidity: </small><strong id="weatherHum"></strong> %</div>
+            <div><small> - Clouds: </small><strong id="weatherCloud"></strong></div>
+            <div></div>
+        </div>
+        <div class="alert alert-info alert-dismissible col-md-5 col-xs-5" id="currencyDiv"
+             style="display: none; margin-left: 10px;width: auto; height: 100%;">
+            <strong>Current exchange courses: </strong>
+            <div><small> - USD/UAH: </small><strong id="usdCurrency"></strong></div>
+            <div><small> - EUR/UAH: </small><strong id="eurCurrency"></strong></div>
+            <div><small> - RUB/UAH: </small><strong id="rurCurrency"></strong></div>
+            <div><small> - BTC/USD: </small><strong id="btcCurrency"></strong></div>
+        </div>
+    </div>
     {% block content %} {% endblock %}
 </div>
 </body>
