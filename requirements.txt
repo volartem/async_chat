@@ -12,7 +12,7 @@ chardet==3.0.4
 envparse==0.2.0
 hiredis==1.0.0
 idna==2.8
-Jinja2==2.10
+Jinja2==2.11.3
 MarkupSafe==1.1.0
 multidict==4.5.2
 psycopg2==2.7.7
